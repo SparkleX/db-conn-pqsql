@@ -13,7 +13,7 @@ export async function sqlTest(conn:Connection):Promise<void> {
 	expect(isResultSet).to.equal(false);
 	isResultSet = await conn.execute("insert into test(id, name) values(1,'a')");
 	expect(conn.getUpdateCount()).to.equal(1);
-	isResultSet = await conn.execute("insert into test(id, name) values(2,'b')");
+	isResultSet = await conn.execute("insert into test(id, name) values($1,$2)", [2,'b']);
 	expect(conn.getUpdateCount()).to.equal(1);
 	isResultSet = await conn.execute("insert into test(id, name) values(3,'c')");
 	expect(conn.getUpdateCount()).to.equal(1);
@@ -21,6 +21,7 @@ export async function sqlTest(conn:Connection):Promise<void> {
 	const resultSet = conn.getResultSet();
 	expect(resultSet.length).to.equal(3);
 	expect(resultSet[0].id).to.equal(1);
+	expect(resultSet[1].id).to.equal(2);
 	return;
 }
 export async function transactionTest(conn:Connection):Promise<void> {
